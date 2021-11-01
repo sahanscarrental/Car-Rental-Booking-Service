@@ -205,7 +205,7 @@ public class BookingRecordService implements BookingService {
 
     @Override
     public List<BookingRecord> getByDateRange(Date from , Date to) {
-        return bookingRecordRepository.findAllByCreatedDateBeforeAndCreatedDateAfter(new Timestamp(from.getTime()), new Timestamp(to.getTime()));
+        return bookingRecordRepository.findAllByPickUpTimeBeforeAndPickUpTimeAfter(new Timestamp(from.getTime()), new Timestamp(to.getTime()));
     }
 
     /**
@@ -759,7 +759,7 @@ public class BookingRecordService implements BookingService {
 
     @Override
     public List<BookingRecord> getAll() {
-        return bookingRecordRepository.findAll();
+        return bookingRecordRepository.findAllByOrderByPickUpTimeDesc();
     }
 
     @Override

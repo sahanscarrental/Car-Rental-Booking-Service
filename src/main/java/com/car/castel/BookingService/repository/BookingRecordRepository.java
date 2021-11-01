@@ -25,6 +25,21 @@ public interface BookingRecordRepository extends JpaRepository<BookingRecord, UU
     List<BookingRecord> findAllByCreatedDateBeforeAndCreatedDateAfter(Timestamp createdDate, Timestamp createdDate2);
 
     /**
+     * find booking records by pickup time
+     *
+     * @param createdDate
+     * @param createdDate2
+     * @return
+     */
+    List<BookingRecord> findAllByPickUpTimeBeforeAndPickUpTimeAfter(Timestamp createdDate, Timestamp createdDate2);
+
+    /**
+     * get all records in ascending order by pickup time
+     * @return
+     */
+    List<BookingRecord> findAllByOrderByPickUpTimeDesc();
+
+    /**
      * find booking records for the given addon list
      * @param addons
      * @return
