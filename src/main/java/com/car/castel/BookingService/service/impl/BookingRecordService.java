@@ -572,6 +572,10 @@ public class BookingRecordService implements BookingService {
             if (bookingRecord1.get().getBookingRecordState() == BookingRecordState.PENDING && updatedBookingRecord.getBookingRecordState() == BookingRecordState.PICKED){
                 VehicleDriver vehicleDriver = updatedBookingRecord.getVehicleDriver();
 
+                if (!vehicleDriver.getEmailVerified()) {
+                    throw new ExceptionWithMessage("Driver Email is not verified");
+                }
+
                 //check if the pickup date time is valid
                 Map<TimeUnit, Long> timeUnitLongMap = MyDateUtils.computeDiff(bookingRecord1.get().getPickUpTime(), new Date());
                 Long days = timeUnitLongMap.get(TimeUnit.DAYS);
