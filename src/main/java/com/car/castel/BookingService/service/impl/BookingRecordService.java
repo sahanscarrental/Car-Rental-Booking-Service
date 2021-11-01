@@ -172,6 +172,11 @@ public class BookingRecordService implements BookingService {
             cost = costPerDay / 2; // Vehicle’s half a day’s rental
         }
 
+        if (days < 1 && hours == 5 && mints > 0) {
+            // book for 5 hours with minutes then should be charged for whole day
+            cost = costPerDay;
+        }
+
         if (days < 1 && hours > 5){
             cost = costPerDay ; // Vehicle’s day’s rental
         }
