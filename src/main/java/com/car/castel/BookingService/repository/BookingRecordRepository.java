@@ -41,4 +41,13 @@ public interface BookingRecordRepository extends JpaRepository<BookingRecord, UU
 
     @Query("Select a from BookingRecord a where a.vehicle = :givenVehicle and (a.bookingRecordState = 2 or a.bookingRecordState = 3)")
     List<BookingRecord> findValidBookingsForVehicle(@Param("givenVehicle")Vehicle givenVehicle);
+
+    /**
+     * see if the given vehicle have any booking currently or previously
+     *
+     * @param givenVehicle
+     * @return
+     */
+    @Query("Select a from BookingRecord a where a.vehicle = :givenVehicle")
+    List<BookingRecord> findAnyBookingsForVehicle(@Param("givenVehicle") Vehicle givenVehicle);
 }

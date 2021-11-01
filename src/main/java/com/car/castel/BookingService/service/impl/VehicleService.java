@@ -53,10 +53,10 @@ public class VehicleService implements CRUDServices<Vehicle> {
     public void delete(UUID uuid) {
         Vehicle vehicle = vehicleRepository.findById(uuid).orElse(null);
         if (vehicle != null) {
-            // check whether the vehicle has ongoing or Pending trips
-            List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findValidBookingsForVehicle(vehicle);
+            // check whether the vehicle has any trips
+            List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findAnyBookingsForVehicle(vehicle);
             if (allByVehicleAndBookingRecordState != null && allByVehicleAndBookingRecordState.size() > 0) {
-                throw new ExceptionWithMessage("Vehicle trying to delete has Picked Up or Pending Bookings");
+                throw new ExceptionWithMessage("Vehicle trying to delete has Bookings Records");
             }
             vehicleRepository.delete(vehicle);
         } else {
