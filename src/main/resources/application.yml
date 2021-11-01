@@ -1,0 +1,53 @@
+server:
+  port: 9193
+  servlet:
+    context-path: /booking-service
+
+spring:
+  rabbitmq:
+    host: ${RABBIT_HOST:127.0.0.1}
+    password: ${RABBIT_PASSWORD:guest}
+    port: ${RABBIT_PORT:5672}
+    username: ${RABBIT_USER_NAME:guest}
+  application:
+    name: BOOKIING-SERVICE
+  datasource:
+    url: jdbc:mysql://localhost:3306/booking_db?autoReconnect=true&failOverReadOnly=false&maxReconnects=10
+    username: rahal
+    password: 123
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://127.0.0.1:8761/eureka/}
+
+  instance:
+    hostname: ${DOMAIN:localhost}
+
+
+queues:
+  otp-send: otp_send_queue
+  email-verify: email_verify
+  drop-extend: drop_extend
+  dmv: dmv
+  booking: booking
+
+exchange:
+  otp-send: otp_send_exchange
+  email-verify: email_verify
+  drop-extend: drop_extend
+  dmv: dmv
+  booking: booking
+
+routingKey:
+  otp-send: otp_send_routingKey
+  email-verify: email_verify
+  drop-extend: drop_extend
+  dmv: dmv
+  booking: booking
