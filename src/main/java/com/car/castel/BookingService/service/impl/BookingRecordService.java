@@ -406,10 +406,10 @@ public class BookingRecordService implements BookingService {
     }
 
     /**
-     * run at every 30 minutes
+     * run at every 15 minutes
      */
     @Override
-    @Scheduled(fixedRate = 1000 * 60 * 30)
+    @Scheduled(fixedRate = 1000 * 60 * 15)
     public void scheduledCheckForBlackListDrivers() {
         log.info("Scanning for failed to pickup bookings ");
         // check for failed to pickup vehicles with a flexible period of 1 hour
