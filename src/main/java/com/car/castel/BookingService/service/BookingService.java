@@ -47,4 +47,9 @@ public interface BookingService extends CRUDServices<BookingRecord>{
      * @param addonList
      */
     void acquireAddons(List<Addon> addonList);
+
+    /**
+     * read periodically the XML file for the list of updated suspended drivers from DMV
+     */
+    void readDMVSuspendedDriversXML();
 }

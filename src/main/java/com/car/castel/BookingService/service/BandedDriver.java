@@ -25,4 +25,8 @@ public class BandedDriver {
         return this.licenceNos.containsKey(licenceNo);
     }
 
+    @Override
+    public String toString() {
+        return "licenceNos=" + licenceNos;
+    }
 }

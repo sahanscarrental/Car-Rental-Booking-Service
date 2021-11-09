@@ -27,10 +27,13 @@ import com.car.castel.BookingService.web.exception.ExceptionWithMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -69,6 +72,13 @@ public class BookingRecordService implements BookingService {
      */
     @Autowired
     EventHandlerProvider eventHandlerProvider;
+
+    @Value("${dmv.path}")
+    private String DMV_DIR;
+
+    private static final String DMV_FILE_NAME = "dmv_drivers_file.csv";
+
+    private static final String COMMA_DELIMITER = ",";
 
     public Boolean checkAddonAvailability(Addon addon, Date from, Date to){
         Collection<BookingRecordState> collection = new ArrayList<>();
@@ -528,6 +538,38 @@ public class BookingRecordService implements BookingService {
         }
         log.info("Addons acquired: " + addonList.size());
 
+    }
+
+    /**
+     * read periodically the XML file for the list of updated suspended drivers from DMV at 12:01 A.M.
+     * second, minute, hour, day of month, month, day(s) of week
+     */
+    @Override
+    @Scheduled(cron = "0 1 0 * * ?")
+    public void readDMVSuspendedDriversXML() {
+        // reset the dmv records in programme memory
+        bandedDriver.initialize();
+        log.info("dmv list: " + bandedDriver.toString());
+        List<List<String>> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(DMV_DIR + DMV_FILE_NAME))) {
+            String line;
+            boolean readLine = false; // going to exempt only for the first line since it's the headings
+            while ((line = br.readLine()) != null) {
+                if (readLine) {
+                    String[] values = line.split(COMMA_DELIMITER);
+                    records.add(Arrays.asList(values));
+                    String ln = values[1];
+                    String val = values[2]+"-"+values[3]+values[4];
+                    bandedDriver.add(ln, val);
+//                    log.info("record: "+ values[1] + " " + values[2]+"-"+values[3]+values[4]);
+                } else {
+                    readLine = true;
+                }
+            }
+            log.info("dmv list: " + bandedDriver.toString());
+        } catch (Exception e) {
+            log.error("Error occurred while reading the CSV file from DMV: "+ e.getMessage());
+        }
     }
 
     private Date getFormattedDate(String date) {
