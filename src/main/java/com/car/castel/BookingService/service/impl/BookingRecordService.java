@@ -541,7 +541,7 @@ public class BookingRecordService implements BookingService {
     }
 
     /**
-     * read periodically the XML file for the list of updated suspended drivers from DMV at 12:01 A.M.
+     * read periodically the CSV file for the list of updated suspended drivers from DMV at 12:01 A.M.
      * second, minute, hour, day of month, month, day(s) of week
      */
     @Override
