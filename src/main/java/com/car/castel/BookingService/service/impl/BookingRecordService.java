@@ -561,7 +561,7 @@ public class BookingRecordService implements BookingService {
                     String ln = values[1];
                     String val = values[2]+"-"+values[3]+values[4];
                     bandedDriver.add(ln, val);
-//                    log.info("record: "+ values[1] + " " + values[2]+"-"+values[3]+values[4]);
+                    // driver added to the Hash map to store in the program memory
                 } else {
                     readLine = true;
                 }
