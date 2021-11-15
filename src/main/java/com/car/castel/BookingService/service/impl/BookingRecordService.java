@@ -546,7 +546,7 @@ public class BookingRecordService implements BookingService {
      */
     @Override
     @Scheduled(cron = "0 1 0 * * ?")
-    public void readDMVSuspendedDriversXML() {
+    public void readDMVSuspendedDriversCSV() {
         // reset the dmv records in programme memory
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh.mm aa");
         log.info("runs at: " + dateFormat.format(new Date()));
