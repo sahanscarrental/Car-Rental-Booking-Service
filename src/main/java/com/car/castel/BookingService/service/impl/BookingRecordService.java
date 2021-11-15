@@ -548,6 +548,8 @@ public class BookingRecordService implements BookingService {
     @Scheduled(cron = "0 1 0 * * ?")
     public void readDMVSuspendedDriversXML() {
         // reset the dmv records in programme memory
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy hh.mm aa");
+        log.info("runs at: " + dateFormat.format(new Date()));
         bandedDriver.initialize();
         log.info("dmv list: " + bandedDriver.toString());
         List<List<String>> records = new ArrayList<>();
