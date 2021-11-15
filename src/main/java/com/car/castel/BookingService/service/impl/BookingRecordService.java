@@ -808,6 +808,6 @@ public class BookingRecordService implements BookingService {
 
     @Override
     public List<BookingRecord> getAll(UUID driverId) {
-        return bookingRecordRepository.findAllByVehicleDriver(driverService.get(driverId));
+        return bookingRecordRepository.findAllByVehicleDriverOrderByPickUpTimeDesc(driverService.get(driverId));
     }
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Repository
 public interface BookingRecordRepository extends JpaRepository<BookingRecord, UUID> {
-    List<BookingRecord> findAllByVehicleDriver(VehicleDriver vehicleDriver);
+    List<BookingRecord> findAllByVehicleDriverOrderByPickUpTimeDesc(VehicleDriver vehicleDriver);
     List<BookingRecord> findAllByVehicleAndBookingRecordState(Vehicle vehicle, BookingRecordState bookingRecordState);
     List<BookingRecord> findAllByBookingRecordStateAndPickUpTimeBetween(BookingRecordState bookingRecordState, Date pickUpTime, Date pickUpTime2);
     List<BookingRecord> findAllByBookingRecordStateIn(Collection<BookingRecordState> bookingRecordState);
