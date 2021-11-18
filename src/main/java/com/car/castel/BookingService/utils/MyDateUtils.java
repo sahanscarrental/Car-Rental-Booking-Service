@@ -60,5 +60,17 @@ public class MyDateUtils extends org.apache.commons.lang.time.DateUtils {
         return calendar.getTime();
     }
 
+    /**
+     * CHeck whether the given data is with in the given range from start-end
+     *
+     * @param testDate date which is testing
+     * @param startDate
+     * @param endDate
+     * @return result
+     */
+    public static boolean isWithinRange(Date testDate, Date startDate, Date endDate) {
+        return !(testDate.before(startDate) || testDate.after(endDate));
+    }
+
 
 }
