@@ -354,7 +354,10 @@ public class BookingRecordService implements BookingService {
         boolean anyMatch = allByVehicleAndBookingRecordState
                 .stream()
                 .parallel()
-                .anyMatch(bookingRecord1 -> MyDateUtils.isXBetweenY(pickUpTime,dropTime,bookingRecord1.getPickUpTime(),bookingRecord1.getDropTime()));
+                .anyMatch(bookingRecord1 ->
+                        MyDateUtils.isXBetweenY(pickUpTime,dropTime,bookingRecord1.getPickUpTime(),bookingRecord1.getDropTime())
+                || MyDateUtils.isWithinRange(bookingRecord1.getPickUpTime(), pickUpTime,dropTime)
+                || MyDateUtils.isWithinRange(bookingRecord1.getDropTime(), pickUpTime,dropTime));
         if (anyMatch){
             throw new ExceptionWithMessage("This vehicle is not available in this period");
         }
