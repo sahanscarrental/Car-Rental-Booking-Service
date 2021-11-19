@@ -104,6 +104,7 @@ public class BookingRecordService implements BookingService {
      * This is executing once per day to check the
      * non picking bookings
      */
+    /*
     @Scheduled(fixedRate = 80000000)
     public void checkNonPickup() {
         List<BookingRecord> unPickedToday = this.getUnPickedToday();
@@ -117,7 +118,7 @@ public class BookingRecordService implements BookingService {
                     log.info("The driver with email {} adding to black-list", vehicleDriver.getEmail());
                 });
 
-    }
+    }*/
 
     /**
      * This method check the age with the given vehicle category
@@ -439,7 +440,7 @@ public class BookingRecordService implements BookingService {
                         blackListingDriver.setDriverState(DriverState.BLACK_LISTED);
                         this.driverRepository.save(blackListingDriver);
                     } else {
-                        log.info("Failed to Retrieve the driver for blacklisting for booking record: " + bookingRecord.getId()
+                        log.error("Failed to Retrieve the driver for blacklisting for booking record: " + bookingRecord.getId()
                                 + "vehicleNo: " + bookingRecord.getVehicle().getVehicleNo());
                     }
                     //updating the booking record status
@@ -644,6 +645,7 @@ public class BookingRecordService implements BookingService {
                         fakeClaimBookingRecord.setBookingRecordState(BookingRecordState.CANCELED);
                         bookingRecordRepository.save(fakeClaimBookingRecord);
                         log.info("Booking is cancelled since system detect fraud claims for driver");
+                        this.releaseAddons(fakeClaimBookingRecord.getAddons());
                     }
                     throw new ExceptionWithMessage("The driver has made fraudulent claims for car accidents");
                 }
