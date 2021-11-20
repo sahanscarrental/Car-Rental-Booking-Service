@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -422,6 +423,7 @@ public class BookingRecordService implements BookingService {
     /**
      * run at every 15 minutes
      */
+    @Transactional
     @Override
     @Scheduled(fixedRate = 1000 * 60 * 15)
     public void scheduledCheckForBlackListDrivers() {
@@ -639,14 +641,9 @@ public class BookingRecordService implements BookingService {
                  * Checking the drive has fake claims (external database)
                  */
                 if(fakeClaim.isIn(vehicleDriver.getLicenceNo())){
-                    // need to cancel eka booking
-                    BookingRecord fakeClaimBookingRecord = bookingRecord1.orElse(null);
-                    if (fakeClaimBookingRecord != null) {
-                        fakeClaimBookingRecord.setBookingRecordState(BookingRecordState.CANCELED);
-                        bookingRecordRepository.save(fakeClaimBookingRecord);
-                        log.info("Booking is cancelled since system detect fraud claims for driver");
-                        this.releaseAddons(fakeClaimBookingRecord.getAddons());
-                    }
+                    // need to cancel the booking
+                    log.info("cancelling the booking since system detect fraud claims for driver");
+                    this.cancelBookingAndReleaseAddons(bookingRecord1);
                     throw new ExceptionWithMessage("The driver has made fraudulent claims for car accidents");
                 }
 
@@ -654,6 +651,9 @@ public class BookingRecordService implements BookingService {
                  * Checking the drive is DMV suspended or not (CSV)
                  */
                 if (bandedDriver.isIn(vehicleDriver.getLicenceNo())){
+                    // need to cancel the booking
+                    log.info("cancelling the booking since system detect driver is DMV suspended");
+                    this.cancelBookingAndReleaseAddons(bookingRecord1);
                     this.detectDMVSuspended(vehicleDriver);
                 }
 
@@ -757,6 +757,16 @@ public class BookingRecordService implements BookingService {
             return bookingRecordRepository.save(updatedBookingRecord);
         }else {
             throw new EntityNotFoundException(BookingRecord.class,"id",uuid.toString());
+        }
+    }
+
+    private void cancelBookingAndReleaseAddons(Optional<BookingRecord> bookingRecord) {
+        BookingRecord fakeClaimBookingRecord = bookingRecord.orElse(null);
+        if (fakeClaimBookingRecord != null) {
+            fakeClaimBookingRecord.setBookingRecordState(BookingRecordState.CANCELED);
+            bookingRecordRepository.save(fakeClaimBookingRecord);
+            log.info("Booking is cancelled since system detect fraud claims for driver");
+            this.releaseAddons(fakeClaimBookingRecord.getAddons());
         }
     }
 
