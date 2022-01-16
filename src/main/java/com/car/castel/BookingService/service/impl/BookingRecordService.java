@@ -351,8 +351,10 @@ public class BookingRecordService implements BookingService {
         String dropTimeText = bookingRequest.getDropTime().toString();
         Date pickUpTime = this.getFormattedDate( bookingRequest.getPickUpTime().toString());
         Date dropTime = this.getFormattedDate( bookingRequest.getDropTime().toString());
-
-        List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findAllByVehicleAndBookingRecordState(vehicle, BookingRecordState.PENDING);
+        Collection<BookingRecordState> collection = new ArrayList<>();
+        collection.add(BookingRecordState.PICKED);
+        collection.add(BookingRecordState.PENDING);
+        List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findAllByVehicleAndBookingRecordStateIn(vehicle, collection);
         boolean anyMatch = allByVehicleAndBookingRecordState
                 .stream()
                 .parallel()
@@ -478,7 +480,10 @@ public class BookingRecordService implements BookingService {
             throw new ExceptionWithMessage("Extended Time should be later than Return time");
         }
         // check where there is any booking for the vehicle on next day
-        List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findAllByVehicleAndBookingRecordState(bookingRecord.getVehicle(), BookingRecordState.PENDING);
+        Collection<BookingRecordState> collection = new ArrayList<>();
+        collection.add(BookingRecordState.PICKED);
+        collection.add(BookingRecordState.PENDING);
+        List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findAllByVehicleAndBookingRecordStateIn(bookingRecord.getVehicle(), collection);
         boolean anyMatch = allByVehicleAndBookingRecordState
                 .stream()
                 .parallel()
@@ -722,7 +727,10 @@ public class BookingRecordService implements BookingService {
                 // to send email to the driver for boking cancelled
                 this.createBookingChangeEvent(updatedBookingRecord, BookingEventType.BOOKING_CANCELLED, EventType.BOOKING_CANCELLED);
             } else if (extendedDropTime != null && bookingRecord1.get().getExtendedDropTime() == null){
-                List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findAllByVehicleAndBookingRecordState(updatedBookingRecord.getVehicle(), BookingRecordState.PENDING);
+                Collection<BookingRecordState> collection = new ArrayList<>();
+                collection.add(BookingRecordState.PICKED);
+                collection.add(BookingRecordState.PENDING);
+                List<BookingRecord> allByVehicleAndBookingRecordState = bookingRecordRepository.findAllByVehicleAndBookingRecordStateIn(updatedBookingRecord.getVehicle(), collection);
                 boolean anyMatch = allByVehicleAndBookingRecordState
                         .stream()
                         .parallel()

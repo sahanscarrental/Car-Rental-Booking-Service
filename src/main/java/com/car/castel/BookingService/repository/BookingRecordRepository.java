@@ -20,6 +20,7 @@ import java.util.UUID;
 public interface BookingRecordRepository extends JpaRepository<BookingRecord, UUID> {
     List<BookingRecord> findAllByVehicleDriverOrderByPickUpTimeDesc(VehicleDriver vehicleDriver);
     List<BookingRecord> findAllByVehicleAndBookingRecordState(Vehicle vehicle, BookingRecordState bookingRecordState);
+    List<BookingRecord> findAllByVehicleAndBookingRecordStateIn(Vehicle vehicle, Collection<BookingRecordState> bookingRecordState);
     List<BookingRecord> findAllByBookingRecordStateAndPickUpTimeBetween(BookingRecordState bookingRecordState, Date pickUpTime, Date pickUpTime2);
     List<BookingRecord> findAllByBookingRecordStateIn(Collection<BookingRecordState> bookingRecordState);
     List<BookingRecord> findAllByCreatedDateBeforeAndCreatedDateAfter(Timestamp createdDate, Timestamp createdDate2);
